@@ -29,3 +29,8 @@ variable "resource_group_location" {
 variable "os_type" {
   type = string
 }
+
+variable "availability_set_id" {
+  type = string
+  
+}
