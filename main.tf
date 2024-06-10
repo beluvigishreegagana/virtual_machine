@@ -18,6 +18,8 @@ resource "azurerm_network_interface" "nic" {
   }
 }
 
+
+
 resource "azurerm_network_security_group" "nsg" {
   name                = "${var.name}_nsg"
   location            = var.resource_group_location
@@ -34,6 +36,19 @@ resource "azurerm_network_security_group" "nsg" {
     source_address_prefix      = "*"
     destination_address_prefix = "*"
   }
+
+  security_rule {
+    name                       = "Allow-http"
+    priority                   = 1011
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp" # Should be "Tcp" instead of "http"
+    source_port_range          = "*"
+    destination_port_range     = "80"
+    source_address_prefix      = "*"
+    destination_address_prefix = "*"
+  }
+
 }
 
 resource "azurerm_network_interface_security_group_association" "nsg_association" {
@@ -47,6 +62,7 @@ resource "azurerm_virtual_machine" "vm" {
   resource_group_name   = var.resource_group_name
   network_interface_ids = [azurerm_network_interface.nic.id]
   vm_size               = var.vm_size
+  availability_set_id   = var.availability_set_id
 
   storage_os_disk {
     name              = "${var.name}_os_disk"
